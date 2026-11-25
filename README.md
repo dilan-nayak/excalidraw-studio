@@ -19,7 +19,7 @@ Excalidraw is a great whiteboard, but in a browser tab you can't keep a folder o
 
 ## Download and install (Windows 10/11, 64-bit)
 
-1. Go to the **[Releases page](https://github.com/OWNER/REPO/releases)** and download `Excalidraw Studio_x.y.z_x64-setup.exe`.
+1. Go to the **[Releases page](https://github.com/dilan-nayak/excalidraw-studio/releases)** and download `Excalidraw Studio_x.y.z_x64-setup.exe`.
 2. Run it. If Windows shows **"Windows protected your PC"**, click **More info → Run anyway**. (The installer is not code-signed yet, which is what triggers this warning.)
 3. Open **Excalidraw Studio** from the Start menu. A short welcome guide opens on first launch.
 
@@ -107,8 +107,8 @@ The AI panel (top-right sparkle button) has a tab for each, with step-by-step in
 You need [Node.js 22+](https://nodejs.org), the [Rust toolchain](https://rustup.rs/) and the Visual Studio Build Tools ("Desktop development with C++").
 
 ```powershell
-git clone https://github.com/OWNER/REPO.git
-cd REPO
+git clone https://github.com/dilan-nayak/excalidraw-studio.git
+cd excalidraw-studio
 npm install
 npm run tauri dev      # run in development
 npm run tauri build    # build the installer
