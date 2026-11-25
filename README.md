@@ -17,13 +17,20 @@ Excalidraw is a great whiteboard, but in a browser tab you can't keep a folder o
 - **AI can draw for you.** Connect Claude Code, Claude Desktop (or any MCP app) and say "draw a login flow"; the shapes appear live.
 - **Works offline and stays light.** Fonts and assets are bundled; the app uses the Windows WebView2 runtime instead of shipping a whole browser.
 
-## Download and install (Windows 10/11, 64-bit)
+## Just want to use it? (most people)
 
-1. Go to the **[Releases page](https://github.com/dilan-nayak/excalidraw-studio/releases)** and download `Excalidraw Studio_x.y.z_x64-setup.exe`.
-2. Run it. If Windows shows **"Windows protected your PC"**, click **More info → Run anyway**. (The installer is not code-signed yet, which is what triggers this warning.)
-3. Open **Excalidraw Studio** from the Start menu. A short welcome guide opens on first launch.
+You do **not** need to install any developer tools. Just download and run the installer.
 
-No other software is required. WebView2 is installed automatically if your PC is missing it.
+1. Open the **[latest release](https://github.com/dilan-nayak/excalidraw-studio/releases/latest)** and, under **Assets**, click `ExcalidrawStudio_x.y.z_x64-setup.exe` to download it.
+2. Double-click the file to install it.
+   - If Windows says **"Windows protected your PC"**, click **More info**, then **Run anyway**. This warning only appears because the installer is not code-signed yet.
+3. Open **Excalidraw Studio** from the Start menu. That is it. It works offline.
+
+Needs Windows 10 or 11 (64-bit). Nothing else to install: the required WebView2 component is already part of Windows and is added automatically if missing.
+
+**Optional, only if you want the AI features:** Claude Desktop needs [Node.js](https://nodejs.org) installed; Claude Code needs Claude Code itself; the built-in chat needs your own API key or Ollama. Drawing, saving and history need none of these. See [AI and MCP](#ai-and-mcp).
+
+> Developers who want to change the code: see [For developers](#for-developers-build-from-source) at the bottom.
 
 ## What you can do
 
@@ -102,7 +109,9 @@ The AI panel (top-right sparkle button) has a tab for each, with step-by-step in
 
 [`examples/kafka-architecture.excalidraw`](examples/kafka-architecture.excalidraw) is a complete, beginner-friendly Apache Kafka architecture poster (brokers, partitions, producer/consumer flow, code samples) that was generated through the MCP connection. Open it with **Menu → Open File**.
 
-## Build from source
+## For developers: build from source
+
+> **You do not need this to use the app.** This section is only for people who want to modify the code or build the installer themselves.
 
 You need [Node.js 22+](https://nodejs.org), the [Rust toolchain](https://rustup.rs/) and the Visual Studio Build Tools ("Desktop development with C++").
 
