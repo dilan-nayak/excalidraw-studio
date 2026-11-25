@@ -1,0 +1,49 @@
+import { defineConfig, type Plugin } from "vite";
+import react from "@vitejs/plugin-react";
+import { viteStaticCopy } from "vite-plugin-static-copy";
+import { normalizePath } from "vite";
+import path from "path";
+
+const excalidrawAssetsDir = normalizePath(
+  path.resolve(__dirname, "node_modules/@excalidraw/excalidraw/dist/prod")
+);
+
+// Excalidraw falls back to a CDN (esm.sh) for fonts/assets. Point that fallback at the copy we
+// bundle (excalidraw-assets) so nothing is fetched from the network and the app works offline.
+const localAssetFallback = (): Plugin => ({
+  name: "local-excalidraw-assets",
+  renderChunk(code) {
+    // matches the template literal `https://esm.sh/${...}/dist/prod/` (it contains a nested template)
+    const re = /`https:\/\/esm\.sh\/\$\{[\s\S]*?\}\/dist\/prod\/`/g;
+    return re.test(code) ? code.replace(re, '(window.location.origin+"/excalidraw-assets/")') : null;
+  },
+});
+
+export default defineConfig({
+  plugins: [
+    localAssetFallback(),
+    react(),
+    viteStaticCopy({
+      targets: [
+        {
+          src: excalidrawAssetsDir + "/**/*",
+          dest: "excalidraw-assets",
+        },
+      ],
+    }),
+  ],
+  clearScreen: false,
+  server: {
+    port: 1420,
+    strictPort: true,
+  },
+  envPrefix: ["VITE_", "TAURI_"],
+  build: {
+    target: "esnext",
+    minify: !process.env.TAURI_DEBUG ? "esbuild" : false,
+    sourcemap: !!process.env.TAURI_DEBUG,
+  },
+  define: {
+    "process.env.IS_PREACT": JSON.stringify("false"),
+  },
+});

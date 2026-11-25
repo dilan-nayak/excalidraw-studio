@@ -1,0 +1,97 @@
+{
+  "productName": "Excalidraw Studio",
+  "version": "0.8.0",
+  "identifier": "com.excalidrawstudio.app",
+  "build": {
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:1420",
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "Excalidraw Studio",
+        "width": 1280,
+        "height": 800,
+        "resizable": true,
+        "fullscreen": false,
+        "decorations": true,
+        "dragDropEnabled": false
+      }
+    ],
+    "security": {
+      "csp": {
+        "default-src": "'self'",
+        "script-src": "'self' 'wasm-unsafe-eval'",
+        "style-src": "'self' 'unsafe-inline'",
+        "img-src": "'self' data: blob:",
+        "font-src": "'self' data:",
+        "worker-src": "'self' blob:",
+        "connect-src": "'self' ipc: http://ipc.localhost https://libraries.excalidraw.com https://generativelanguage.googleapis.com https://api.anthropic.com https://api.openai.com http://127.0.0.1:* http://localhost:*",
+        "frame-src": "https://www.youtube.com https://player.vimeo.com https://www.figma.com https://link.excalidraw.com https://*.simplepdf.eu https://stackblitz.com https://giphy.com",
+        "object-src": "'none'",
+        "base-uri": "'self'",
+        "form-action": "'self'"
+      }
+    }
+  },
+  "bundle": {
+    "active": true,
+    "publisher": "Excalidraw Studio",
+    "resources": [
+      "../THIRD-PARTY-NOTICES.md"
+    ],
+    "createUpdaterArtifacts": false,
+    "targets": [
+      "nsis"
+    ],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.ico",
+      "icons/icon.icns"
+    ],
+    "windows": {
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": "",
+      "nsis": {
+        "displayLanguageSelector": false,
+        "installerIcon": "icons/icon.ico",
+        "languages": [
+          "English"
+        ]
+      }
+    },
+    "macOS": {
+      "minimumSystemVersion": "10.15"
+    },
+    "fileAssociations": [
+      {
+        "ext": [
+          "excalidraw"
+        ],
+        "mimeType": "application/json",
+        "description": "Excalidraw Drawing"
+      }
+    ],
+    "shortDescription": "Excalidraw desktop app with file history, AI and MCP",
+    "longDescription": "Excalidraw Desktop is a native wrapper around Excalidraw, the virtual whiteboard for sketching hand-drawn like diagrams."
+  },
+  "plugins": {
+    "deep-link": {
+      "desktop": {
+        "schemes": [
+          "excalidraw-studio"
+        ]
+      }
+    },
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDQ4Rjg1NDUwQkUzNDlGRTkKUldUcG56UytVRlQ0U0ZSb3dMTDAvOGhnbXYwV0VBRlJCZHhudk84NTE3dHJrYzlQQWZIZi9EUlgK",
+      "endpoints": []
+    }
+  }
+}

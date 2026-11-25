@@ -1,0 +1,18 @@
+{
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "Excalidraw Studio",
+        "width": 1280,
+        "height": 800,
+        "resizable": true,
+        "fullscreen": false,
+        "decorations": true,
+        "dragDropEnabled": false,
+        "zoomHotkeysEnabled": true,
+        "additionalBrowserArgs": "--in-process-gpu --renderer-process-limit=1 --disable-background-networking --disable-component-update --disable-sync --disable-breakpad --disable-features=CalculateNativeWinOcclusion,OptimizationHints,MediaRouter,Translate,msWebOOUI,msPdfOOUI,msSmartScreenProtection"
+      }
+    ]
+  }
+}
