@@ -71,6 +71,9 @@ const LIBRARY_FILE = "library.json"; // pre-0.3.0 flat library, migrated into LI
 const LIBRARIES_FILE = "libraries.json";
 const SETTINGS_FILE = "settings.json";
 const MAX_RECENT = 10;
+// The AI Diagram feature (menu item + sparkle button) is hidden for now because the AI assistant panel covers
+// the same need. All of its code is kept; flip this to true to bring it back.
+const SHOW_AI_DIAGRAM = false;
 
 interface Settings {
   recentFiles: string[];
@@ -2371,9 +2374,11 @@ export default function App() {
                   </MainMenu.Item>
                 </>
               )}
-              <MainMenu.Item onSelect={() => setTimeout(() => setAiDraft(true), 100)}>
-                AI Diagram...
-              </MainMenu.Item>
+              {SHOW_AI_DIAGRAM && (
+                <MainMenu.Item onSelect={() => setTimeout(() => setAiDraft(true), 100)}>
+                  AI Diagram...
+                </MainMenu.Item>
+              )}
               <MainMenu.Item onSelect={() => setTimeout(startPresentation, 100)}>
                 Present (F5)
               </MainMenu.Item>
@@ -2612,7 +2617,8 @@ export default function App() {
           </>,
           canvasMenuSlot
         )}
-      {aiSlot &&
+      {SHOW_AI_DIAGRAM &&
+        aiSlot &&
         createPortal(
           <button
             className="ai-canvas-btn"

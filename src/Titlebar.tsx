@@ -162,8 +162,8 @@ export default function Titlebar({ theme, onToggleTheme, currentFile, onSave, di
     return (
       <div data-tauri-drag-region className="titlebar titlebar-mac">
         <img src="/icon.png" alt="" className="titlebar-icon" draggable={false} />
-        <MenuButton onToggle={onToggleMenu} />
         <SidebarToggle onToggle={onToggleSidebar} />
+        <MenuButton onToggle={onToggleMenu} />
         <div className="titlebar-title" data-tauri-drag-region>
           {title}
         </div>
@@ -181,8 +181,8 @@ export default function Titlebar({ theme, onToggleTheme, currentFile, onSave, di
   return (
     <div data-tauri-drag-region className="titlebar">
       <img src="/icon.png" alt="" className="titlebar-icon" draggable={false} />
-      <MenuButton onToggle={onToggleMenu} />
       <SidebarToggle onToggle={onToggleSidebar} />
+      <MenuButton onToggle={onToggleMenu} />
       <div className="titlebar-title" data-tauri-drag-region>
         {title}
       </div>
