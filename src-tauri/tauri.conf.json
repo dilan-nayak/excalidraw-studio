@@ -1,6 +1,6 @@
 {
   "productName": "Excalidraw Studio",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "identifier": "com.excalidrawstudio.app",
   "build": {
     "frontendDist": "../dist",
@@ -43,7 +43,7 @@
     "resources": [
       "../THIRD-PARTY-NOTICES.md"
     ],
-    "createUpdaterArtifacts": false,
+    "createUpdaterArtifacts": true,
     "targets": [
       "nsis"
     ],
@@ -90,8 +90,13 @@
       }
     },
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDQ4Rjg1NDUwQkUzNDlGRTkKUldUcG56UytVRlQ0U0ZSb3dMTDAvOGhnbXYwV0VBRlJCZHhudk84NTE3dHJrYzlQQWZIZi9EUlgK",
-      "endpoints": []
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDI1QzNFN0E2ODdFRUY0MzYKUldRMjlPNkhwdWZESlkxRU9SdXVtT05LcGJoOVpRVmRqa3ZDQzh6ZVlRUGQ4d2xIRkpNaDRLS3MK",
+      "endpoints": [
+        "https://github.com/dilan-nayak/excalidraw-studio/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
     }
   }
 }

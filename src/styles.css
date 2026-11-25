@@ -1630,3 +1630,14 @@ body.panel-resizing { user-select: none; cursor: ew-resize; }
 .ai-check { margin: 4px 0 0; padding-left: 18px; }
 .ai-check li.ok::marker { content: "✓  "; color: #2f9e44; }
 .ai-check li.todo::marker { content: "☐  "; }
+
+/* ===== Update dialog ===== */
+.upd-box { width: 440px; max-width: 92vw; display: flex; flex-direction: column; gap: 10px; }
+.upd-notes { margin: 0; max-height: 180px; overflow: auto; white-space: pre-wrap; font: 12px/1.5 Consolas, monospace; background: rgba(128,128,128,.14); border-radius: 8px; padding: 8px 10px; }
+.upd-bar { height: 10px; background: rgba(128,128,128,.25); border-radius: 999px; overflow: hidden; }
+.upd-bar-fill { height: 100%; background: linear-gradient(90deg, #7c6cf0, #4f46e5); border-radius: 999px; transition: width .2s; }
+.upd-bar-fill[data-indeterminate="true"] { animation: upd-slide 1.2s ease-in-out infinite; }
+@keyframes upd-slide { 0% { margin-left: -35%; } 100% { margin-left: 100%; } }
+.upd-auto { display: flex; align-items: center; gap: 8px; font-size: 12.5px; cursor: pointer; }
+.upd-box a { color: #6965db; font-weight: 600; }
+.upd-auto input { padding: 0; border: none; width: 16px; height: 16px; }

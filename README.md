@@ -30,6 +30,14 @@ Needs Windows 10 or 11 (64-bit). Nothing else to install: the required WebView2 
 
 **Optional, only if you want the AI features:** Claude Desktop needs [Node.js](https://nodejs.org) installed; Claude Code needs Claude Code itself; the built-in chat needs your own API key or Ollama. Drawing, saving and history need none of these. See [AI and MCP](#ai-and-mcp).
 
+### Updates
+
+The app updates itself. A few seconds after it starts it checks GitHub for a newer version. If there is one, a window shows what is new, and **Update now** downloads it, saves your open drawing, installs it and restarts the app. You can also check yourself any time: **Menu → Check for updates...**. Every update is cryptographically signed, and the app refuses anything that does not match.
+
+To turn the automatic check off, untick the box in that same window.
+
+> If you installed **v0.8.0**, it does not have this feature yet. Install v0.9.0 or newer once by hand; after that, updates are automatic.
+
 > Developers who want to change the code: see [For developers](#for-developers-build-from-source) at the bottom.
 
 ## What you can do
@@ -127,6 +135,13 @@ The installer is written to `src-tauri/target/release/bundle/nsis/`.
 
 > On Windows, run the build from PowerShell or the "Developer PowerShell for VS". If you use Git Bash, make sure Git's `usr\bin` folder is not first on `PATH`, or its `link.exe` shadows the MSVC linker.
 
+### Publishing a new version (maintainers)
+
+1. Bump `version` in `package.json`, `src-tauri/Cargo.toml` and `src-tauri/tauri.conf.json` (all three the same).
+2. One time only: create an updater key with `npx tauri signer generate -w ~/.tauri/excalidraw-studio.key`, put the **public** key into `plugins.updater.pubkey` in `tauri.conf.json`, and add the private key and its password as the repository secrets `TAURI_SIGNING_PRIVATE_KEY` and `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`. Keep a backup of the private key: without it, existing installs cannot accept new updates.
+3. Commit, then push a tag: `git tag v0.9.1 && git push origin v0.9.1`.
+4. The Release workflow builds the signed installer and publishes it together with `latest.json`, which installed apps read to find the update.
+
 ### Project layout
 
 | Path | What is in it |
@@ -134,6 +149,7 @@ The installer is written to `src-tauri/target/release/bundle/nsis/`.
 | `src/App.tsx` | main app, menus, sidebars |
 | `src/ChatPanel.tsx`, `src/ConnectPages.tsx` | AI panel and the connect guides |
 | `src/tools.ts`, `src/prompts.ts`, `src/mcp.ts` | MCP tool definitions and the bridge to Rust |
+| `src/Updater.tsx` | auto-update check, download and install |
 | `src/history.ts`, `src/trashStore.ts`, `src/backup.ts` | version history, trash, backup |
 | `src/diagramText.ts`, `src/codeGraph.ts`, `src/describe.ts` | Diagram from text, Code to diagram, diagram description |
 | `src-tauri/src/mcp.rs` | the local MCP server (Rust) |

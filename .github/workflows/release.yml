@@ -1,7 +1,12 @@
 name: Release
 
-# Push a tag like v0.8.0 (it must match "version" in src-tauri/tauri.conf.json)
-# and this builds the Windows installer and attaches it to a GitHub Release.
+# Push a tag like v0.9.0 (it must match "version" in src-tauri/tauri.conf.json).
+# This builds the signed Windows installer and publishes it, plus latest.json,
+# which installed apps read to offer the update.
+#
+# One-time setup: add two repository secrets (Settings > Secrets and variables > Actions):
+#   TAURI_SIGNING_PRIVATE_KEY           contents of the updater private key file
+#   TAURI_SIGNING_PRIVATE_KEY_PASSWORD  its password
 on:
   push:
     tags:
@@ -25,6 +30,16 @@ jobs:
             exit 1
           fi
 
+      - name: Check signing secrets exist
+        shell: bash
+        env:
+          KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+        run: |
+          if [ -z "$KEY" ]; then
+            echo "::error::Secret TAURI_SIGNING_PRIVATE_KEY is missing. Add it so the installer can be signed for auto-update."
+            exit 1
+          fi
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -41,17 +56,26 @@ jobs:
       - name: Install frontend dependencies
         run: npm ci
 
-      - name: Build installer
+      - name: Build signed installer
         run: npx tauri build
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
 
       - name: Publish release
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          FILE=$(ls src-tauri/target/release/bundle/nsis/*-setup.exe | head -n 1)
+          VERSION=$(node -p "require('./src-tauri/tauri.conf.json').version")
+          SRC=$(ls src-tauri/target/release/bundle/nsis/*-setup.exe | head -n 1)
+          NAME="ExcalidrawStudio_${VERSION}_x64-setup.exe"
+          cp "$SRC" "$NAME"
+          URL="https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/$NAME"
+          V="$VERSION" URL="$URL" SIG="$SRC.sig" node -e "const fs=require('fs');fs.writeFileSync('latest.json',JSON.stringify({version:process.env.V,notes:'See the release page for what is new.',pub_date:new Date().toISOString(),platforms:{'windows-x86_64':{signature:fs.readFileSync(process.env.SIG,'utf8').trim(),url:process.env.URL}}},null,2))"
+          cat latest.json
           if gh release view "${{ github.ref_name }}" >/dev/null 2>&1; then
-            gh release upload "${{ github.ref_name }}" "$FILE" --clobber
+            gh release upload "${{ github.ref_name }}" "$NAME" latest.json --clobber
           else
-            gh release create "${{ github.ref_name }}" "$FILE"               --title "Excalidraw Studio ${{ github.ref_name }}"               --notes "Download the setup .exe, run it, and follow the README: https://github.com/${{ github.repository }}#readme"
+            gh release create "${{ github.ref_name }}" "$NAME" latest.json --title "Excalidraw Studio ${{ github.ref_name }}" --generate-notes
           fi

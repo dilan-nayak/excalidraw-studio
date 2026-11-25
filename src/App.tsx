@@ -17,13 +17,12 @@ import {
 } from "@excalidraw/excalidraw";
 import type { AppState, ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import "@excalidraw/excalidraw/index.css";
-import { open, save, ask, confirm } from "@tauri-apps/plugin-dialog";
+import { open, save, confirm } from "@tauri-apps/plugin-dialog";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { getVersion } from "@tauri-apps/api/app";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
-import { check } from "@tauri-apps/plugin-updater";
-import { relaunch } from "@tauri-apps/plugin-process";
+import UpdateDialog, { useUpdater } from "./Updater";
 import {
   readTextFile,
   writeTextFile,
@@ -340,6 +339,8 @@ export default function App() {
   const currentFileRef = useRef<string | null>(null);
   const apiRef = useRef<ExcalidrawImperativeAPI | null>(null);
   const [dirty, setDirty] = useState(false);
+  const dirtyNowRef = useRef(false);
+  dirtyNowRef.current = dirty;
   const savedVersionRef = useRef(0);
 
   // ---- Presentation mode: frames become slides
@@ -837,25 +838,6 @@ export default function App() {
     getVersion().then(setAppVersion).catch(() => {});
   }, []);
 
-  // ---- Check for app updates on startup (no-op in dev; endpoint only has release builds)
-  useEffect(() => {
-    (async () => {
-      try {
-        const update = await check();
-        if (!update) return;
-        const yes = await ask(
-          `Version ${update.version} is available. Download and install now?`,
-          { title: "Update available", kind: "info" }
-        );
-        if (!yes) return;
-        await update.downloadAndInstall();
-        await relaunch();
-      } catch (err) {
-        console.warn("Update check failed:", err);
-      }
-    })();
-  }, []);
-
   // ---- Intercept external link clicks and open in default browser
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -971,6 +953,10 @@ export default function App() {
 
   const handleSave = useCallback(() => doSave(false), [doSave]);
   const handleSaveAs = useCallback(() => doSave(true), [doSave]);
+  // auto-update: checks GitHub shortly after launch; saves the open drawing before installing
+  const updater = useUpdater(async () => {
+    if (currentFileRef.current && dirtyNowRef.current) await doSave(false);
+  });
 
   // Shared by the AI chat and the MCP server (see tools.ts)
   const toolHostRef = useRef<ToolHost>({
@@ -2333,6 +2319,7 @@ export default function App() {
                 Copy diagram description
               </MainMenu.Item>
               <MainMenu.Item onSelect={() => setTimeout(() => setGuideOpen(true), 100)}>Guide &amp; shortcuts</MainMenu.Item>
+              <MainMenu.Item onSelect={() => setTimeout(() => updater.checkNow(), 100)}>Check for updates...</MainMenu.Item>
               <MainMenu.Item onSelect={() => setTimeout(() => setFocus(true), 100)}>
                 Focus mode (F8)
               </MainMenu.Item>
@@ -2647,6 +2634,7 @@ export default function App() {
         </button>
       )}
       {guideOpen && <GuideDialog onClose={closeGuide} firstRun={guideFirstRun} />}
+      <UpdateDialog state={updater.state} onInstall={updater.install} onClose={updater.close} onRetry={updater.checkNow} />
       {textDiagramOpen && excalidrawAPI && <DiagramFromText api={excalidrawAPI} onClose={() => setTextDiagramOpen(false)} />}
       {codeDiagramOpen && excalidrawAPI && <CodeToDiagram api={excalidrawAPI} onClose={() => setCodeDiagramOpen(false)} />}
       {trashOpen && (
